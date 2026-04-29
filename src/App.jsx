@@ -36,6 +36,7 @@ const techLogos = [
   { node: <FaMicrochip color="#FFD700" />, title: "IoT Engineering" },
   { node: <SiFigma color="#F24E1E" />, title: "Figma", href: "https://www.figma.com" },
   { node: <SiJavascript color="#F7DF1E" />, title: "JavaScript" },
+  { node: <SiNodedotjs color="#339933" />, title: "Node.js", href: "https://nodejs.org" },
   { node: <SiGithub color="var(--text-primary)" title="GitHub" href="https://github.com" /> }
 ];
 
@@ -74,6 +75,13 @@ export default function App() {
   const [theme, setTheme] = useState(() => {
     return localStorage.getItem('theme') || 'light';
   });
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   // Apply theme on load and change
   useEffect(() => {
@@ -589,15 +597,16 @@ export default function App() {
               <p style={{ color: 'var(--text-secondary)', marginBottom: '1.5rem', lineHeight: '1.6' }}>
                 Halo! Saya Yuliet Tanamal, seorang pengembang perangkat lunak dan spesialis IoT (Internet of Things). Proyek "Siram Pintar" ini adalah wujud dedikasi saya dalam memadukan otomatisasi perangkat keras dengan antarmuka web modern yang interaktif untuk menyelesaikan tantangan di dunia nyata.
               </p>
-              <div style={{ width: '100%', maxWidth: '400px', margin: '0 auto', overflow: 'hidden' }}>
+              <div style={{ width: '100%', maxWidth: '100%', padding: '1rem 0', margin: '0 auto', overflow: 'hidden' }}>
                 <LogoLoop 
                   logos={techLogos} 
-                  speed={40} 
-                  logoHeight={40} 
-                  gap={30} 
+                  speed={12} 
+                  logoHeight={isMobile ? 36 : 48} 
+                  gap={isMobile ? 40 : 70} 
                   fadeOut={true} 
-                  fadeOutColor={theme === 'dark' ? '#1f2937' : '#ffffff'}
+                  fadeOutColor="var(--panel-bg)"
                   scaleOnHover={true}
+                  hoverSpeed={0}
                 />
               </div>
             </div>

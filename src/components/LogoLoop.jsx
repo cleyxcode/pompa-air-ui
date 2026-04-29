@@ -256,7 +256,7 @@ export const LogoLoop = memo(
           return (
             <li
               className={cx(
-                'flex-none text-[length:var(--logoloop-logoHeight)] leading-[1]',
+                'flex-none flex items-center justify-center text-[length:var(--logoloop-logoHeight)] leading-[1]',
                 isVertical ? 'mb-[var(--logoloop-gap)]' : 'mr-[var(--logoloop-gap)]',
                 scaleOnHover && 'overflow-visible group/item'
               )}
@@ -276,7 +276,7 @@ export const LogoLoop = memo(
               'inline-flex items-center',
               'motion-reduce:transition-none',
               scaleOnHover &&
-                'transition-transform duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] group-hover/item:scale-120'
+              'transition-transform duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] group-hover/item:scale-120'
             )}
             aria-hidden={!!item.href && !item.ariaLabel}
           >
@@ -290,7 +290,7 @@ export const LogoLoop = memo(
               '[image-rendering:-webkit-optimize-contrast]',
               'motion-reduce:transition-none',
               scaleOnHover &&
-                'transition-transform duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] group-hover/item:scale-120'
+              'transition-transform duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] group-hover/item:scale-120'
             )}
             src={item.src}
             srcSet={item.srcSet}
@@ -329,7 +329,7 @@ export const LogoLoop = memo(
         return (
           <li
             className={cx(
-              'flex-none text-[length:var(--logoloop-logoHeight)] leading-[1]',
+              'flex-none flex items-center justify-center text-[length:var(--logoloop-logoHeight)] leading-[1]',
               isVertical ? 'mb-[var(--logoloop-gap)]' : 'mr-[var(--logoloop-gap)]',
               scaleOnHover && 'overflow-visible group/item'
             )}
