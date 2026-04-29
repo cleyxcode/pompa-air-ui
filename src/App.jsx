@@ -7,9 +7,16 @@ import {
 import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer
 } from 'recharts';
+import { 
+  SiReact, SiTailwindcss, SiVite, SiSupabase, 
+  SiEspressif, SiArduino, SiJavascript, SiFigma,
+  SiNodedotjs, SiGithub
+} from 'react-icons/si';
+import { FaMicrochip } from 'react-icons/fa';
 import toast, { Toaster } from 'react-hot-toast';
 import Aurora from './Aurora';
 import ProfileCard from './ProfileCard';
+import { LogoLoop } from './components/LogoLoop';
 import './index.css';
 
 const API_URL = 'https://ml-api-supabase.vercel.app';
@@ -18,6 +25,19 @@ const HEADERS = {
   'Content-Type': 'application/json',
   'X-API-Key': API_KEY
 };
+
+const techLogos = [
+  { node: <SiReact color="#61DAFB" />, title: "React", href: "https://react.dev" },
+  { node: <SiTailwindcss color="#06B6D4" />, title: "Tailwind CSS", href: "https://tailwindcss.com" },
+  { node: <SiVite color="#646CFF" />, title: "Vite", href: "https://vitejs.dev" },
+  { node: <SiSupabase color="#3ECF8E" />, title: "Supabase", href: "https://supabase.com" },
+  { node: <SiEspressif color="#E7352C" />, title: "ESP32", href: "https://www.espressif.com" },
+  { node: <SiArduino color="#00979D" />, title: "Arduino", href: "https://www.arduino.cc" },
+  { node: <FaMicrochip color="#FFD700" />, title: "IoT Engineering" },
+  { node: <SiFigma color="#F24E1E" />, title: "Figma", href: "https://www.figma.com" },
+  { node: <SiJavascript color="#F7DF1E" />, title: "JavaScript" },
+  { node: <SiGithub color="var(--text-primary)" title="GitHub" href="https://github.com" /> }
+];
 
 // Move ProgressBar outside to prevent unmounting on parent render
 const ProgressBar = ({ label, value, max, color }) => {
@@ -569,11 +589,16 @@ export default function App() {
               <p style={{ color: 'var(--text-secondary)', marginBottom: '1.5rem', lineHeight: '1.6' }}>
                 Halo! Saya Yuliet Tanamal, seorang pengembang perangkat lunak dan spesialis IoT (Internet of Things). Proyek "Siram Pintar" ini adalah wujud dedikasi saya dalam memadukan otomatisasi perangkat keras dengan antarmuka web modern yang interaktif untuk menyelesaikan tantangan di dunia nyata.
               </p>
-              <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-                <span className="badge safe">IoT Engineering</span>
-                <span className="badge on">React.js</span>
-                <span className="badge auto">UI/UX Design</span>
-                <span className="badge safe">Hardware</span>
+              <div style={{ width: '100%', maxWidth: '400px', margin: '0 auto', overflow: 'hidden' }}>
+                <LogoLoop 
+                  logos={techLogos} 
+                  speed={40} 
+                  logoHeight={40} 
+                  gap={30} 
+                  fadeOut={true} 
+                  fadeOutColor={theme === 'dark' ? '#1f2937' : '#ffffff'}
+                  scaleOnHover={true}
+                />
               </div>
             </div>
           </div>
