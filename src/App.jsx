@@ -86,7 +86,7 @@ export default function App() {
       const res = await fetch(`${API_URL}/history?limit=100`, { headers: HEADERS });
       if (!res.ok) throw new Error('Gagal mengambil data riwayat');
       const data = await res.json();
-      const formattedData = (data.data || []).map(item => ({
+      const formattedData = (data.records || []).map(item => ({
         ...item,
         timeLabel: new Date(item.timestamp).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })
       })).reverse();
