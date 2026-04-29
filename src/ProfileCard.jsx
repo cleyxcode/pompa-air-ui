@@ -560,42 +560,38 @@ const ProfileCardComponent = ({
                 pointerEvents: 'none'
               }}
             >
-              <div className="w-full absolute flex flex-col" style={{ top: '3em', display: 'flex', gridArea: 'auto' }}>
+              <div className="w-full absolute flex flex-col" style={{ top: '1.25rem', display: 'flex', gridArea: 'auto', zIndex: 10 }}>
                 <h3
-                  className="font-semibold m-0"
+                  className="font-bold m-0"
                   style={{
-                    fontSize: 'min(5svh, 3em)',
-                    backgroundImage: 'linear-gradient(to bottom, #fff, #6f6fbe)',
-                    backgroundSize: '1em 1.5em',
-                    WebkitTextFillColor: 'transparent',
-                    backgroundClip: 'text',
-                    WebkitBackgroundClip: 'text',
+                    fontSize: 'min(4svh, 2.2rem)',
+                    color: '#000000',
                     display: 'block',
                     gridArea: 'auto',
                     borderRadius: '0',
                     pointerEvents: 'auto',
-                    fontFamily: 'var(--font-heading)'
+                    fontFamily: 'var(--font-heading)',
+                    WebkitTextStroke: '1px #064e3b',
+                    textShadow: '0 2px 4px rgba(0,0,0,0.1)'
                   }}
                 >
                   {name}
                 </h3>
                 <p
-                  className="font-semibold whitespace-nowrap mx-auto w-min"
+                  className="font-medium whitespace-nowrap mx-auto w-min"
                   style={{
                     position: 'relative',
-                    top: '-12px',
-                    fontSize: '16px',
+                    top: '-4px',
+                    fontSize: 'min(2svh, 14px)',
                     margin: '0 auto',
-                    backgroundImage: 'linear-gradient(to bottom, #fff, #4a4ac0)',
-                    backgroundSize: '1em 1.5em',
-                    WebkitTextFillColor: 'transparent',
-                    backgroundClip: 'text',
-                    WebkitBackgroundClip: 'text',
+                    color: '#1a1a1a',
                     display: 'block',
                     gridArea: 'auto',
                     borderRadius: '0',
                     pointerEvents: 'auto',
-                    fontFamily: 'var(--font-body)'
+                    fontFamily: 'var(--font-body)',
+                    WebkitTextStroke: '0.5px #065f46',
+                    opacity: 1
                   }}
                 >
                   {title}
