@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  Droplets, Thermometer, Wind, Power, Settings, 
-  CloudRain, ShieldAlert, History, Activity, AlertTriangle, 
+import {
+  Droplets, Thermometer, Wind, Power, Settings,
+  CloudRain, ShieldAlert, History, Activity, AlertTriangle,
   Play, Square, RefreshCcw, Sun, Moon, User
 } from 'lucide-react';
 import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer
 } from 'recharts';
-import { 
-  SiReact, SiTailwindcss, SiVite, SiSupabase, 
+import {
+  SiReact, SiTailwindcss, SiVite, SiSupabase,
   SiEspressif, SiArduino, SiJavascript, SiFigma,
   SiNodedotjs, SiGithub
 } from 'react-icons/si';
@@ -144,29 +144,6 @@ export default function App() {
     }
   };
 
-  const handleResetOverride = async () => {
-    const toastId = toast.loading('Mereset manual override...');
-    try {
-      const res = await fetch(`${API_URL}/reset-override`, { method: 'POST', headers: HEADERS });
-      if (!res.ok) throw new Error('Gagal reset override');
-      toast.success('Berhasil reset manual override', { id: toastId });
-      fetchStatus();
-    } catch (err) {
-      toast.error(err.message, { id: toastId });
-    }
-  };
-
-  const handleResetRain = async () => {
-    const toastId = toast.loading('Mereset sensor hujan...');
-    try {
-      const res = await fetch(`${API_URL}/reset-rain`, { method: 'POST', headers: HEADERS });
-      if (!res.ok) throw new Error('Gagal reset sensor hujan');
-      toast.success('Berhasil reset deteksi hujan', { id: toastId });
-      fetchStatus();
-    } catch (err) {
-      toast.error(err.message, { id: toastId });
-    }
-  };
 
   const formatDate = (isoString) => {
     if (!isoString) return '-';
@@ -207,7 +184,7 @@ export default function App() {
   return (
     <div className="app-wrapper">
       <div className="aurora-background">
-        <Aurora 
+        <Aurora
           colorStops={theme === 'dark' ? ["#10b981", "#3b82f6", "#047857"] : ["#a7f3d0", "#bae6fd", "#34d399"]}
           blend={0.5}
           amplitude={1.2}
@@ -348,8 +325,8 @@ export default function App() {
                       <RefreshCcw className="card-icon" style={{ backgroundColor: 'var(--off-light)', color: 'var(--off)' }} /> Siram
                     </div>
                   </div>
-                  <div className="card-value">{status.watering_today ?? 0} <span style={{fontSize: '1rem'}}>kali</span></div>
-                  <div className="card-desc">Terakhir: {formatDate(status.last_watering)}</div>
+                  <div className="card-value">{status.watering_today ?? 0} <span style={{ fontSize: '1rem' }}>kali</span></div>
+                  <div className="card-desc">Terakhir: {formatDate(status.last_watered_ts)}</div>
                 </div>
               </div>
 
@@ -401,7 +378,7 @@ export default function App() {
                       <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', marginBottom: '0.5rem', fontWeight: 600 }}>STATUS KEAMANAN</p>
                       <div style={{ display: 'flex', gap: '1rem' }}>
                         <span className={`badge ${status.safety_locked ? 'locked' : 'safe'}`}>
-                          <ShieldAlert size={14} style={{ marginRight: '0.25rem' }} /> 
+                          <ShieldAlert size={14} style={{ marginRight: '0.25rem' }} />
                           LOCKED: {status.safety_locked ? 'YA' : 'TIDAK'}
                         </span>
                         <span className={`badge ${status.manual_override ? 'warning' : 'off'}`}>
@@ -427,58 +404,43 @@ export default function App() {
         {activeTab === 'control' && (() => {
           const isPumpOn = status?.pump_status === true || status?.pump_status === 'on';
           const isModeAuto = status?.mode === 'auto';
-          
-          return (
-          <div className="control-grid">
-            <div className="card">
-              <div className="card-header">
-                <div className="card-title"><Settings className="card-icon" /> Kontrol Pompa</div>
-              </div>
-              <p style={{ color: 'var(--text-secondary)', marginBottom: '1.5rem' }}>
-                Gunakan panel ini untuk mengoperasikan pompa secara manual atau mengembalikannya ke mode otomatis.
-              </p>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                <button 
-                  className={`btn ${!isModeAuto && isPumpOn ? 'btn-primary' : 'btn-secondary'}`} 
-                  onClick={() => handleControl('on', 'manual')}
-                  style={!isModeAuto && isPumpOn ? { outline: '3px solid var(--accent-green-light)', boxShadow: '0 0 15px var(--accent-green-light)' } : {}}
-                >
-                  <Play size={20} /> NYALAKAN POMPA (Manual)
-                </button>
-                <button 
-                  className={`btn ${!isModeAuto && !isPumpOn ? 'btn-danger' : 'btn-secondary'}`} 
-                  onClick={() => handleControl('off', 'manual')}
-                  style={!isModeAuto && !isPumpOn ? { outline: '3px solid var(--danger-light)', boxShadow: '0 0 15px var(--danger-light)' } : {}}
-                >
-                  <Square size={20} /> MATIKAN POMPA (Manual)
-                </button>
-                <button 
-                  className={`btn ${isModeAuto ? 'btn-primary' : 'btn-secondary'}`} 
-                  onClick={() => handleControl('off', 'auto')}
-                  style={isModeAuto ? { outline: '3px solid var(--accent-green-light)', boxShadow: '0 0 15px var(--accent-green-light)' } : {}}
-                >
-                  <Activity size={20} /> SET KE AUTO
-                </button>
-              </div>
-            </div>
 
-            <div className="card">
-              <div className="card-header">
-                <div className="card-title"><AlertTriangle className="card-icon" style={{ backgroundColor: 'var(--warning-light)', color: 'var(--warning)' }} /> Reset Sistem</div>
+          return (
+            <div className="control-grid">
+              <div className="card">
+                <div className="card-header">
+                  <div className="card-title"><Settings className="card-icon" /> Kontrol Pompa</div>
+                </div>
+                <p style={{ color: 'var(--text-secondary)', marginBottom: '1.5rem' }}>
+                  Gunakan panel ini untuk mengoperasikan pompa secara manual atau mengembalikannya ke mode otomatis.
+                </p>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                  <button
+                    className={`btn ${!isModeAuto && isPumpOn ? 'btn-primary' : 'btn-secondary'}`}
+                    onClick={() => handleControl('on', 'manual')}
+                    style={!isModeAuto && isPumpOn ? { outline: '3px solid var(--accent-green-light)', boxShadow: '0 0 15px var(--accent-green-light)' } : {}}
+                  >
+                    <Play size={20} /> NYALAKAN POMPA (Manual)
+                  </button>
+                  <button
+                    className={`btn ${!isModeAuto && !isPumpOn ? 'btn-danger' : 'btn-secondary'}`}
+                    onClick={() => handleControl('off', 'manual')}
+                    style={!isModeAuto && !isPumpOn ? { outline: '3px solid var(--danger-light)', boxShadow: '0 0 15px var(--danger-light)' } : {}}
+                  >
+                    <Square size={20} /> MATIKAN POMPA (Manual)
+                  </button>
+                  <button
+                    className={`btn ${isModeAuto ? 'btn-primary' : 'btn-secondary'}`}
+                    onClick={() => handleControl('off', 'auto')}
+                    style={isModeAuto ? { outline: '3px solid var(--accent-green-light)', boxShadow: '0 0 15px var(--accent-green-light)' } : {}}
+                  >
+                    <Activity size={20} /> SET KE AUTO
+                  </button>
+                </div>
               </div>
-              <p style={{ color: 'var(--text-secondary)', marginBottom: '1.5rem' }}>
-                Jika sistem terkunci karena deteksi hujan atau manual override, Anda dapat meresetnya di sini.
-              </p>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                <button className="btn btn-warning" onClick={handleResetOverride}>
-                  <RefreshCcw size={20} /> RESET OVERRIDE
-                </button>
-                <button className="btn btn-warning" onClick={handleResetRain}>
-                  <CloudRain size={20} /> RESET SENSOR HUJAN
-                </button>
-              </div>
+
+
             </div>
-          </div>
           );
         })()}
 
@@ -504,18 +466,18 @@ export default function App() {
                       <AreaChart data={history} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                         <defs>
                           <linearGradient id="colorMoisture" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="5%" stopColor="var(--accent-green)" stopOpacity={0.3}/>
-                            <stop offset="95%" stopColor="var(--accent-green)" stopOpacity={0}/>
+                            <stop offset="5%" stopColor="var(--accent-green)" stopOpacity={0.3} />
+                            <stop offset="95%" stopColor="var(--accent-green)" stopOpacity={0} />
                           </linearGradient>
                           <linearGradient id="colorTemp" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="5%" stopColor="var(--warning)" stopOpacity={0.3}/>
-                            <stop offset="95%" stopColor="var(--warning)" stopOpacity={0}/>
+                            <stop offset="5%" stopColor="var(--warning)" stopOpacity={0.3} />
+                            <stop offset="95%" stopColor="var(--warning)" stopOpacity={0} />
                           </linearGradient>
                         </defs>
                         <CartesianGrid strokeDasharray="3 3" stroke="var(--panel-border)" vertical={false} />
                         <XAxis dataKey="timeLabel" stroke="var(--text-secondary)" fontSize={12} tickLine={false} axisLine={false} />
                         <YAxis stroke="var(--text-secondary)" fontSize={12} tickLine={false} axisLine={false} />
-                        <Tooltip 
+                        <Tooltip
                           contentStyle={{ backgroundColor: 'var(--panel-bg)', borderColor: 'var(--panel-border)', borderRadius: '12px', color: 'var(--text-primary)' }}
                           itemStyle={{ color: 'var(--text-primary)' }}
                         />
@@ -591,19 +553,19 @@ export default function App() {
                 innerGradient={theme === 'dark' ? "linear-gradient(145deg,#1f2937 0%,#04785744 100%)" : "linear-gradient(145deg,#ffffff 0%,#a7f3d044 100%)"}
               />
             </div>
-            
+
             <div className="card" style={{ width: '100%', maxWidth: '600px', textAlign: 'center', zIndex: 10 }}>
               <h3 style={{ fontSize: '1.25rem', marginBottom: '1rem', color: 'var(--text-primary)', fontFamily: 'var(--font-heading)' }}>Tentang Saya</h3>
               <p style={{ color: 'var(--text-secondary)', marginBottom: '1.5rem', lineHeight: '1.6' }}>
                 Halo! Saya Yuliet Tanamal, seorang pengembang perangkat lunak dan spesialis IoT (Internet of Things). Proyek "Siram Pintar" ini adalah wujud dedikasi saya dalam memadukan otomatisasi perangkat keras dengan antarmuka web modern yang interaktif untuk menyelesaikan tantangan di dunia nyata.
               </p>
               <div style={{ width: '100%', maxWidth: '100%', padding: '1rem 0', margin: '0 auto', overflow: 'hidden' }}>
-                <LogoLoop 
-                  logos={techLogos} 
-                  speed={12} 
-                  logoHeight={isMobile ? 36 : 48} 
-                  gap={isMobile ? 40 : 70} 
-                  fadeOut={true} 
+                <LogoLoop
+                  logos={techLogos}
+                  speed={12}
+                  logoHeight={isMobile ? 36 : 48}
+                  gap={isMobile ? 40 : 70}
+                  fadeOut={true}
                   fadeOutColor="var(--panel-bg)"
                   scaleOnHover={true}
                   hoverSpeed={0}
