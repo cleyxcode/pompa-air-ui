@@ -70,6 +70,8 @@ export default function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [status, setStatus] = useState(null);
   const [history, setHistory] = useState([]);
+  const [historyLimit, setHistoryLimit] = useState(100);
+  const [historyPumpOnly, setHistoryPumpOnly] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [theme, setTheme] = useState(() => {
@@ -111,7 +113,10 @@ export default function App() {
   const fetchHistory = async (isBackground = false) => {
     try {
       if (!isBackground) setLoading(true);
-      const res = await fetch(`${API_URL}/history?limit=100`, { headers: HEADERS });
+      const params = new URLSearchParams({ limit: historyLimit });
+      if (historyPumpOnly) params.append('pump_only', 'true');
+      
+      const res = await fetch(`${API_URL}/history?${params.toString()}`, { headers: HEADERS });
       if (!res.ok) throw new Error('Gagal mengambil data riwayat');
       const data = await res.json();
       const formattedData = (data.records || []).map(item => ({
@@ -170,11 +175,11 @@ export default function App() {
       }
     }, 2000); // Changed to 2 seconds for faster realtime feel
     return () => clearInterval(interval);
-  }, [activeTab]);
+  }, [activeTab, historyLimit, historyPumpOnly]);
 
   useEffect(() => {
     if (activeTab === 'history') fetchHistory();
-  }, [activeTab]);
+  }, [activeTab, historyLimit, historyPumpOnly]);
 
   const latest = status?.latest_data || {};
   const isReady = status && !loading;
@@ -337,8 +342,8 @@ export default function App() {
                     <div className="card-title">
                       <Droplets className="card-icon" /> Kelembaban Tanah
                     </div>
-                    <span className="badge safe" style={{ backgroundColor: 'var(--off-light)', color: getKnnColor(latest?.knn_label) }}>
-                      {latest?.knn_label || 'MENUNGGU'}
+                    <span className="badge safe" style={{ backgroundColor: 'var(--off-light)', color: getKnnColor(latest?.label || latest?.knn_label || latest?.status_tanah) }}>
+                      {latest?.label || latest?.knn_label || latest?.status_tanah || 'MENUNGGU'}
                     </span>
                   </div>
                   <div className="card-value">{latest?.soil_moisture ?? 0}%</div>
@@ -447,8 +452,35 @@ export default function App() {
         {/* RIWAYAT */}
         {activeTab === 'history' && (
           <>
-            <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '1rem' }}>
-              <button className="btn btn-secondary" style={{ width: 'auto', padding: '0.5rem 1rem' }} onClick={fetchHistory}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap', gap: '1rem' }}>
+              <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', flexWrap: 'wrap' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <label style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>Tampilkan:</label>
+                  <select 
+                    className="btn btn-secondary" 
+                    style={{ padding: '0.4rem', width: 'auto', backgroundColor: 'var(--panel-bg)', borderColor: 'var(--panel-border)', color: 'var(--text-primary)', outline: 'none' }}
+                    value={historyLimit}
+                    onChange={(e) => setHistoryLimit(Number(e.target.value))}
+                  >
+                    <option value={20}>20 Data</option>
+                    <option value={50}>50 Data</option>
+                    <option value={100}>100 Data</option>
+                    <option value={500}>500 Data</option>
+                  </select>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', color: 'var(--text-primary)', fontSize: '0.85rem' }}>
+                    <input 
+                      type="checkbox" 
+                      checked={historyPumpOnly}
+                      onChange={(e) => setHistoryPumpOnly(e.target.checked)}
+                      style={{ accentColor: 'var(--accent-green)', width: '16px', height: '16px', cursor: 'pointer' }}
+                    />
+                    Hanya Pompa ON
+                  </label>
+                </div>
+              </div>
+              <button className="btn btn-secondary" style={{ width: 'auto', padding: '0.5rem 1rem' }} onClick={() => fetchHistory()}>
                 <RefreshCcw size={16} /> Refresh Data
               </button>
             </div>
@@ -508,13 +540,13 @@ export default function App() {
                           <td>{item.temperature}°C</td>
                           <td>{item.air_humidity}%</td>
                           <td>
-                            <span style={{ color: getKnnColor(item.knn_label), fontWeight: '700' }}>
-                              {item.knn_label || '-'}
+                            <span style={{ color: getKnnColor(item.label || item.status_tanah || item.knn_label), fontWeight: '700' }}>
+                              {item.label || item.status_tanah || item.knn_label || '-'}
                             </span>
                           </td>
                           <td>
-                            <span className={`badge ${item.pump_on ? 'on' : 'off'}`}>
-                              {item.pump_on ? 'ON' : 'OFF'}
+                            <span className={`badge ${item.pump_status || item.pump_on ? 'on' : 'off'}`}>
+                              {item.pump_status || item.pump_on ? 'ON' : 'OFF'}
                             </span>
                           </td>
                         </tr>
